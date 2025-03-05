@@ -1,59 +1,67 @@
 import {
-  Body,
   Controller,
   Delete,
   Get,
-  Param,
   Post,
   Put,
+  Param,
+  Body,
+  Query,
 } from '@nestjs/common';
-import { Item } from 'src/interfaces/item.interface';
+import { ItemsService } from './items.service';
 import { CreateItemDto } from './dtos/create-item';
 import { UpdateItemDto } from './dtos/update-item';
-import { ItemsService } from './items.service';
+import { Item } from 'src/interfaces/item.interface';
 
-@Controller('api/todolists/:todoListId')
+@Controller('api/todolists/:todoListId/items')
 export class ItemsController {
-  constructor(private itemsService: ItemsService) {}
+  constructor(private readonly itemsService: ItemsService) {}
 
-  @Get('/items')
-  index(@Param() param: { todoListId: number }): Item[] {
-    return this.itemsService.all(param.todoListId);
+  @Get()
+  all(@Param('todoListId') todoListId: number): Item[] {
+    return this.itemsService.all(Number(todoListId));
   }
 
   @Get('/:itemId')
-  show(@Param() param: { todoListId: number; itemId: number }): Item {
-    return this.itemsService.get(param.todoListId, param.itemId);
+  get(
+    @Param('todoListId') todoListId: number,
+    @Param('itemId') itemId: number,
+  ): Item {
+    return this.itemsService.get(Number(todoListId), Number(itemId));
   }
 
-  @Post('/item')
+  @Post()
   create(
-    @Param() param: { todoListId: number },
+    @Param('todoListId') todoListId: number,
     @Body() dto: CreateItemDto,
   ): Item {
-    return this.itemsService.create(param.todoListId, dto);
+    return this.itemsService.create(Number(todoListId), dto);
   }
 
   @Put('/:itemId')
   update(
-    @Param() param: { todoListId: number; itemId: number },
+    @Param('todoListId') todoListId: number,
+    @Param('itemId') itemId: number,
     @Body() dto: UpdateItemDto,
   ): Item {
-    return this.itemsService.update(param.todoListId, param.itemId, dto);
+    return this.itemsService.update(Number(todoListId), Number(itemId), dto);
   }
 
   @Delete('/:itemId')
-  delete(@Param() param: { todoListId: number; itemId: number }): void {
-    this.itemsService.delete(param.todoListId, param.itemId);
+  delete(
+    @Param('todoListId') todoListId: number,
+    @Param('itemId') itemId: number,
+  ): void {
+    this.itemsService.delete(Number(todoListId), Number(itemId));
   }
 
-  @Delete('/bulk')
-  async bulkDelete(@Param() param: { todoListId: number }) {
-    // Offloads the deletion to a background task
+  @Delete()
+  async bulkDelete(@Param('todoListId') todoListId: number): Promise<void> {
+    // Offload deletion to a background task
     setImmediate(() => {
-      this.itemsService.deleteAllItemsInList(param.todoListId);
+      this.itemsService.deleteAllItemsInList(Number(todoListId));
     });
 
-    return { message: `Bulk delete started for: ${param.todoListId}` };
+    return;
   }
 }

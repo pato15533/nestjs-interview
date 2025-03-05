@@ -7,6 +7,10 @@ Changing [this line](https://github.com/pato15533/nestjs-interview/blob/36ef0673
 
 I added the items.controller.spec.ts file, which includes all the tests for the items controller.
 
+## REST API best practices
+
+I changed some of the endpoints URL's, following REST API best practices.
+
 ## Bulk delete items problem
 
 To tackle the items bulk delete, I consulted the nestJS documentation as well as ChatGPT. I found the SetImmediate() function, which is useful when you have a long process that you want to make async so that the event loop can still run and service other requests.  

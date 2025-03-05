@@ -46,7 +46,7 @@ export class ItemsService {
 
   delete(todoListId: number, id: number): void {
     const index = this.items.findIndex(
-      (x) => x.id == Number(id) && x.todoListId == Number(todoListId),
+      (x) => x.id == Number(id) && x.todoListId === Number(todoListId),
     );
 
     if (index > -1) {
@@ -56,7 +56,7 @@ export class ItemsService {
 
   deleteAllItemsInList(todoListId: number): void {
     for (let i = this.items.length - 1; i >= 0; i--) {
-      if (this.items[i].todoListId === todoListId) {
+      if (this.items[i].todoListId === Number(todoListId)) {
         this.items.splice(i, 1);
       }
     }
