@@ -3,11 +3,11 @@ import { ItemsController } from './items.controller';
 import { ItemsService } from './items.service';
 
 describe('ItemsController', () => {
-  let itemService: ItemsService;
+  let itemsService: ItemsService;
   let itemsController: ItemsController;
 
   beforeEach(async () => {
-    itemService = new ItemsService([
+    itemsService = new ItemsService([
       {
         id: 1,
         title: 'test1',
@@ -26,7 +26,7 @@ describe('ItemsController', () => {
 
     const app: TestingModule = await Test.createTestingModule({
       controllers: [ItemsController],
-      providers: [{ provide: ItemsService, useValue: itemService }],
+      providers: [{ provide: ItemsService, useValue: itemsService }],
     }).compile();
 
     itemsController = app.get<ItemsController>(ItemsController);
@@ -81,9 +81,9 @@ describe('ItemsController', () => {
         todoListId: 1,
       });
 
-      expect(itemService.get(1, 1).title).toEqual('modified');
-      expect(itemService.get(1, 1).description).toEqual('new description');
-      expect(itemService.get(1, 1).completed).toEqual(true);
+      expect(itemsService.get(1, 1).title).toEqual('modified');
+      expect(itemsService.get(1, 1).description).toEqual('new description');
+      expect(itemsService.get(1, 1).completed).toEqual(true);
     });
   });
 
@@ -102,7 +102,7 @@ describe('ItemsController', () => {
         todoListId: 1,
       });
 
-      expect(itemService.all(1).length).toBe(3);
+      expect(itemsService.all(1).length).toBe(3);
     });
   });
 
@@ -110,7 +110,7 @@ describe('ItemsController', () => {
     it('should delete the item with the given id', () => {
       expect(() => itemsController.delete(1, 1)).not.toThrow();
 
-      expect(itemService.all(1).map((x) => x.id)).toEqual([2]);
+      expect(itemsService.all(1).map((x) => x.id)).toEqual([2]);
     });
   });
 });
