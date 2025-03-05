@@ -1,0 +1,125 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { before } from 'node:test';
+import { ItemsController } from './items.controller';
+import { ItemsService } from './items.service';
+
+describe('ItemsController', () => {
+  let itemService: ItemsService;
+  let itemsController: ItemsController;
+
+  beforeEach(async () => {
+    itemService = new ItemsService([
+      {
+        id: 1,
+        title: 'test1',
+        description: 'test1 description',
+        completed: false,
+        todoListId: 1,
+      },
+      {
+        id: 2,
+        title: 'test2',
+        description: 'test2 description',
+        completed: false,
+        todoListId: 1,
+      },
+    ]);
+
+    const app: TestingModule = await Test.createTestingModule({
+      controllers: [ItemsController],
+      providers: [{ provide: ItemsService, useValue: itemService }],
+    }).compile();
+
+    itemsController = app.get<ItemsController>(ItemsController);
+  });
+
+  describe('index', () => {
+    it('should return the items of a todoList', () => {
+      expect(itemsController.index({ todoListId: 1 })).toEqual([
+        {
+          id: 1,
+          title: 'test1',
+          description: 'test1 description',
+          completed: false,
+          todoListId: 1,
+        },
+        {
+          id: 2,
+          title: 'test2',
+          description: 'test2 description',
+          completed: false,
+          todoListId: 1,
+        },
+      ]);
+    });
+  });
+
+  describe('show', () => {
+    it('should return the item with the given id', () => {
+      expect(itemsController.show({ todoListId: 1, itemId: 1 })).toEqual({
+        id: 1,
+        title: 'test1',
+        description: 'test1 description',
+        completed: false,
+        todoListId: 1,
+      });
+    });
+  });
+
+  describe('update', () => {
+    it('should update the item with the given id', () => {
+      expect(
+        itemsController.update(
+          { todoListId: 1, itemId: 1 },
+          {
+            title: 'modified',
+            description: 'new description',
+            completed: true,
+          },
+        ),
+      ).toEqual({
+        id: 1,
+        title: 'modified',
+        description: 'new description',
+        completed: true,
+        todoListId: 1,
+      });
+
+      expect(itemService.get(1, 1).title).toEqual('modified');
+      expect(itemService.get(1, 1).description).toEqual('new description');
+      expect(itemService.get(1, 1).completed).toEqual(true);
+    });
+  });
+
+  describe('create', () => {
+    it('should create the item with the given id', () => {
+      expect(
+        itemsController.create(
+          { todoListId: 1 },
+          {
+            title: 'new item',
+            description: 'new description',
+          },
+        ),
+      ).toEqual({
+        id: 3,
+        title: 'new item',
+        description: 'new description',
+        completed: false,
+        todoListId: 1,
+      });
+
+      expect(itemService.all(1).length).toBe(3);
+    });
+  });
+
+  describe('delete', () => {
+    it('should delete the item with the given id', () => {
+      expect(() =>
+        itemsController.delete({ todoListId: 1, itemId: 1 }),
+      ).not.toThrow();
+
+      expect(itemService.all(1).map((x) => x.id)).toEqual([2]);
+    });
+  });
+});

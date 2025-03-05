@@ -47,7 +47,7 @@ export class ItemsController {
     this.itemsService.delete(param.todoListId, param.itemId);
   }
 
-  @Delete('')
+  @Delete('/bulk')
   async bulkDelete(@Param() param: { todoListId: number }) {
     // Offloads the deletion to a background task
     setImmediate(() => {
