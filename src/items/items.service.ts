@@ -54,6 +54,14 @@ export class ItemsService {
     }
   }
 
+  deleteAllItemsInList(todoListId: number): void {
+    for (let i = this.items.length - 1; i >= 0; i--) {
+      if (this.items[i].todoListId === todoListId) {
+        this.items.splice(i, 1);
+      }
+    }
+  }
+
   private nextId(): number {
     const last = this.items
       .map((x) => x.id)

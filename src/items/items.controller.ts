@@ -46,4 +46,14 @@ export class ItemsController {
   delete(@Param() param: { todoListId: number; itemId: number }): void {
     this.itemsService.delete(param.todoListId, param.itemId);
   }
+
+  @Delete('')
+  async bulkDelete(@Param() param: { todoListId: number }) {
+    // Offloads the deletion to a background task
+    setImmediate(() => {
+      this.itemsService.deleteAllItemsInList(param.todoListId);
+    });
+
+    return { message: `Bulk delete started for: ${param.todoListId}` };
+  }
 }
