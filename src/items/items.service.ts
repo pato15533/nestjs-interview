@@ -54,7 +54,7 @@ export class ItemsService {
     }
   }
 
-  deleteAllItemsInList(todoListId: number): void {
+  bulkDelete(todoListId: number): void {
     for (let i = this.items.length - 1; i >= 0; i--) {
       if (this.items[i].todoListId === Number(todoListId)) {
         this.items.splice(i, 1);

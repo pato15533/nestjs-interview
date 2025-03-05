@@ -6,7 +6,6 @@ import {
   Put,
   Param,
   Body,
-  Query,
 } from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { CreateItemDto } from './dtos/create-item';
@@ -59,7 +58,7 @@ export class ItemsController {
   async bulkDelete(@Param('todoListId') todoListId: number): Promise<void> {
     // Offload deletion to a background task
     setImmediate(() => {
-      this.itemsService.deleteAllItemsInList(Number(todoListId));
+      this.itemsService.bulkDelete(Number(todoListId));
     });
 
     return;
